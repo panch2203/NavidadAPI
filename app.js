@@ -10,18 +10,26 @@ const ninosRouter = require('./routes/ninos');
 const regalosRouter = require('./routes/regalos');
 const categoriasRouter = require('./routes/categorias');
 
+mongoose.connect('mongodb://127.0.0.1:27017/santaDB',
+  { useNewUrlParser: true, useUnifiedTopology: true}
+);
+
 const app = express();
+
+
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/empleados', empleadosRouter);
 app.use('/ninos', ninosRouter);
 app.use('/regalos', regalosRouter);
 app.use('/categorias',categoriasRouter);
-
+app.get('*', (req, res) => {
+  res.status(404).send('Route not found');
+});
 module.exports = app;
