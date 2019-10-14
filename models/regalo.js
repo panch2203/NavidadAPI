@@ -16,7 +16,7 @@ const regaloSchema = new mongoose.Schema({
   categoria: {
     type: String,
     // type: mongoose.Schema.Types.ObjectId,
-
+  }
 });
 
 module.exports = mongoose.model('regalos', regaloSchema);

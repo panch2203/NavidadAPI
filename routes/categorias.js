@@ -78,13 +78,12 @@ router.put('/:id', (req, res, next) =>{
 
 /* DELETE categoria:id */
 router.delete('/:id', (req, res, next) =>{
-    let id = req.params.id;    
+    let id = req.params.id;
 
     Regalo.updateMany({"categoria": id}, {"$set":{"categoria": null}})
         .then(() => {
           console.log("Cambios a regalos");
           res.status(200).json({
-
           });
         })
         .catch(next)
