@@ -13,6 +13,10 @@ const regaloSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Cant be blank!']
   },
+  categoria: {
+    type: String,
+    // type: mongoose.Schema.Types.ObjectId,
+
 });
 
 module.exports = mongoose.model('regalos', regaloSchema);

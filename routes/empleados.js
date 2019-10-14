@@ -39,6 +39,7 @@ router.get('/', verifyToken, function(req, res, next) {
   )
 });
 
+/* POST empleados creación. */
 router.post('/', (req, res, next) => {
   //Creando empleado
   const body = req.body;
@@ -59,6 +60,7 @@ router.post('/', (req, res, next) => {
         .catch(next);
 });
 
+/* POST empleados Login. */
 router.post('/login', (req, res, next) => {
   const body = req.body;
 
@@ -107,6 +109,26 @@ router.post('/login', (req, res, next) => {
         .catch(next);
 });
 
+/* POST empleados modificación. */
+router.put('/:id', (req, res, next) =>{
+    let id = req.params.id;
+    let body = req.body;
+
+    Empleado.findByIdAndUpdate(id, body, {new: true})
+          .then(result => {
+            if(result){
+              res.status(200).json({
+                empleado: result
+              });
+            }
+            else{
+              res.status(404).send('Cant update, missing elf');
+            }
+          })
+          .catch(next)
+})
+
+/* Verificación del accessToken. */
 function verifyToken(req, res, next){
   //token es orrecto y válido
   //if true next()
