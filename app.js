@@ -11,6 +11,7 @@ const empleadosRouter = require('./routes/empleados');
 const ninosRouter = require('./routes/ninos');
 const regalosRouter = require('./routes/regalos');
 const categoriasRouter = require('./routes/categorias');
+const ninosregalosRouter = require('./routes/ninosregalos');
 
 mongoose.connect('mongodb://127.0.0.1:27017/santaDB',
   { useNewUrlParser: true, useUnifiedTopology: true}
@@ -31,6 +32,7 @@ app.use('/empleados', empleadosRouter);
 app.use('/ninos', ninosRouter);
 app.use('/regalos', regalosRouter);
 app.use('/categorias',categoriasRouter);
+app.use('/ninosregalos',ninosregalosRouter);
 app.get('*', (req, res) => {
   res.status(404).send('Route not found');
 });

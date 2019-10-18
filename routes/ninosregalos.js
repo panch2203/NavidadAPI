@@ -1,53 +1,52 @@
 var express = require('express');
 var router = express.Router();
 const mongoose = require('mongoose');
-const Regalo = require('../models/regalo');
 const NinoRegalo = require('../models/ninoregalo');
 
-/* GET regalos listing. */
+/* GET empleados lista. */
 router.get('/', function(req, res, next) {
-  Regalo.find({})
+  NinoRegalo.find({})
     .then(result => {
         if(result.length){
           res.status(200).json({ result });
         }
         else {
-            res.status(404).send('No hay regalos');
+            res.status(404).send('Niño sin regalos');
         }
     })
     .catch(next)
 });
 
-/* GET regalo:id */
+/* GET niño_regalo:id */
 router.get('/:id', (req, res, next) =>{
   let id = req.params.id;
-  Regalo.findById(id).exec()
+  NinoRegalo.findById(id).exec()
       .then(result => {
         if(result){
           res.status(200).json({
-            regalo: result
+            ninoregalo: result
           });
         }
         else{
-          res.status(404).send('Regalo no existe');
+          res.status(404).send('Niño no existe');
         }
       })
       .catch(next);
 });
 
-/* POST regalos creacion. */
+/* POST niños_regalos creacion. */
 router.post('/', (req, res, next) => {
   const body = req.body;
-  Regalo.create(body)
+  NinoRegalo.create(body)
         .then(result => {
           if(result){
             res.status(201).json({
-              message: "Creacion de regalo exitosa",
-              regalo: result
+              message: "Asignación de regalo a niño exitosa",
+              ninoregalo: result
             })
           }else {
             next({
-              message: "No se creo regalo",
+              message: "No se asigno nada",
               name: "Invalid"
             })
           }
@@ -55,44 +54,39 @@ router.post('/', (req, res, next) => {
         .catch(next);
 });
 
-// /* POST regalos modificación por ID */
+/* POST niños_regalos modificación por ID */
 router.put('/:id', (req, res, next) =>{
     let id = req.params.id;
     let body = req.body;
 
-    Regalo.findByIdAndUpdate(id, body, {new: true})
+    NinoRegalo.findByIdAndUpdate(id, body, {new: true})
           .then(result => {
             if(result){
               res.status(200).json({
-                nino: result
+                ninoregalo: result
               });
             }
             else{
-              res.status(404).send('Acción no posible, niño no existe');
+              res.status(404).send('Acción no posible, Asignación no existe');
             }
           })
           .catch(next)
 });
 
-/* DELETE regalo:id */
+/* DELETE niño:id */
 router.delete('/:id', (req, res, next) =>{
     let id = req.params.id;
 
-    NinoRegalo.deleteMany({ idNino: id })
+    NinoRegalo.findByIdAndRemove(id)
         .then(() => {
           res.status(204).json({
-            message: "Niños eliminados"
-          });
-        })
-        .catch(next)
-
-    Regalo.findByIdAndRemove(id)
-        .then(() => {
-          res.status(204).json({
-            message: "Niño eliminado"
+            message: "Asignación eliminada"
           });
         })
         .catch(next)
 });
+
+
+
 
 module.exports = router;

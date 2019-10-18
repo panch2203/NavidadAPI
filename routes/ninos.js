@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const mongoose = require('mongoose');
 const Nino = require('../models/nino');
+const NinoRegalo = require('../models/ninoregalo');
 
 /* GET empleados lista. */
 router.get('/', function(req, res, next) {
@@ -77,6 +78,14 @@ router.put('/:id', (req, res, next) =>{
 router.delete('/:id', (req, res, next) =>{
     let id = req.params.id;
 
+    NinoRegalo.deleteMany({ idNino: id })
+        .then(() => {
+          res.status(204).json({
+            message: "Niños eliminados"
+          });
+        })
+        .catch(next)
+        
     Nino.findByIdAndRemove(id)
         .then(() => {
           res.status(204).json({

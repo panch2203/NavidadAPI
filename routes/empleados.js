@@ -24,14 +24,12 @@ router.get('/', verifyToken, function(req, res, next) {
       if (err) next(err);
       Empleado.find({})
           .then(result => {
-              console.log("Result " + result);
-              if (result.length){
-                console.log("Si entre al result");
+              if (result.length){                
                 res.status(200).json({ result });
                 // res.send("HOLA");
               }
               else{
-                res.status(404).send('Who let the dogs out');
+                res.status(404).send('No hay elfos');
               }
           })
           .catch(next);
