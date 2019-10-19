@@ -157,6 +157,27 @@ router.put('/:id', verifyToken, (req, res, next) =>{
     )
 });
 
+/* DELETE empleados:id */
+router.delete('/:id', verifyToken, (req, res, next) =>{
+    jwt.verify(
+      req.token,
+      'secretKey',
+      (err, authData) => {
+        console.log("Error de verify " + err);
+        if (err) next(err);
+        let id = req.params.id;
+
+        Empleado.findByIdAndRemove(id)
+            .then(() => {
+              res.status(204).json({
+                message: "Elfo eliminado"
+              });
+            })
+            .catch(next)
+      }
+    )
+});
+
 /* Verificación del accessToken. */
 function verifyToken(req, res, next){
   //token es orrecto y válido
