@@ -6,6 +6,9 @@ const empleadoSchema = new mongoose.Schema({
   nombre: {
     type: String,
     required: [true, 'Cant be blank!'],
+    lowercase: true,
+    match: [/^[a-zA-Z0-9]+$/, 'is invalid'],
+    index: { unique: true }
   },
   fotoPerfil: {
     type: String,

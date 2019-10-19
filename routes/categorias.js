@@ -1,44 +1,67 @@
 var express = require('express');
+const jwt = require('jsonwebtoken');
 var router = express.Router();
 const mongoose = require('mongoose');
 const Categoria = require('../models/categoria');
 const Regalo = require('../models/regalo');
 
 /* GET categorias listing. */
-router.get('/', function(req, res, next) {
-  Categoria.find({})
-    .then(result => {
-        if(result.length){
-          res.status(200).json({ result });
-        }
-        else {
-            res.status(404).send('No hay categorias');
-        }
-    })
-    .catch(next)
+router.get('/', verifyToken, function(req, res, next) {
+  jwt.verify(
+    req.token,
+    'secretKey',
+    (err, authData) => {
+      console.log("Error de verify " + err);
+      if (err) next(err);
+      Categoria.find({})
+        .then(result => {
+            if(result.length){
+              res.status(200).json({ result });
+            }
+            else {
+                res.status(404).send('No hay categorias');
+            }
+        })
+        .catch(next)
+      }
+  )
 });
 
 /* GET categoria:id */
-router.get('/:id', (req, res, next) =>{
-  let id = req.params.id;
-  Categoria.findById(id).exec()
-      .then(result => {
-        if(result){
-          res.status(200).json({
-            categoria: result
-          });
-        }
-        else{
-          res.status(404).send('Categoria no existe');
-        }
-      })
-      .catch(next);
+router.get('/:id', verifyToken, (req, res, next) =>{
+  jwt.verify(
+    req.token,
+    'secretKey',
+    (err, authData) => {
+      console.log("Error de verify " + err);
+      if (err) next(err);
+      let id = req.params.id;
+      Categoria.findById(id).exec()
+          .then(result => {
+            if(result){
+              res.status(200).json({
+                categoria: result
+              });
+            }
+            else{
+              res.status(404).send('Categoria no existe');
+            }
+          })
+          .catch(next);
+    }
+  )
 });
 
 /* POST categorias creacion. */
-router.post('/', (req, res, next) => {
-  const body = req.body;
-  Categoria.create(body)
+router.post('/', verifyToken, (req, res, next) => {
+  jwt.verify(
+    req.token,
+    'secretKey',
+    (err, authData) => {
+      console.log("Error de verify " + err);
+      if (err) next(err);
+      const body = req.body;
+      Categoria.create(body)
         .then(result => {
           if(result){
             res.status(201).json({
@@ -53,16 +76,22 @@ router.post('/', (req, res, next) => {
           }
         })
         .catch(next);
+    }
+  )
 });
 
 // /* POST categorias modificación por ID */
-router.put('/:id', (req, res, next) =>{
-    let id = req.params.id;
-    let body = req.body;
+router.put('/:id', verifyToken, (req, res, next) =>{
+    jwt.verify(
+      req.token,
+      'secretKey',
+      (err, authData) => {
+        console.log("Error de verify " + err);
+        if (err) next(err);
+        let id = req.params.id;
+        let body = req.body;
 
-    console.log("nombre cat es" + req.params.nombre);
-
-    Categoria.findByIdAndUpdate(id, body, {new: true})
+        Categoria.findByIdAndUpdate(id, body, {new: true})
           .then(result => {
             if(result){
               res.status(200).json({
@@ -74,28 +103,59 @@ router.put('/:id', (req, res, next) =>{
             }
           })
           .catch(next)
+      }
+    )
 });
 
 /* DELETE categoria:id */
-router.delete('/:id', (req, res, next) =>{
-    let id = req.params.id;
+router.delete('/:id', verifyToken, (req, res, next) =>{
+    jwt.verify(
+      req.token,
+      'secretKey',
+      (err, authData) => {
+        console.log("Error de verify " + err);
+        if (err) next(err);
+        let id = req.params.id;
 
-    Regalo.updateMany({"categoria": id}, {"$set":{"categoria": null}})
-        .then(() => {
-          console.log("Cambios a regalos");
-          res.status(200).json({
-          });
-        })
-        .catch(next)
+        //Modificando categorias de los regalos
+        Regalo.updateMany({"categoria": id}, {"$set":{"categoria": null}})
+            .then(() => {
+              console.log("Cambios a regalos");
+              res.status(200).json({
+              });
+            })
+            .catch(next)
 
-
-    Categoria.findByIdAndRemove(id)
-        .then(() => {
-          res.status(204).json({
-            message: "Categoria eliminado"
-          });
-        })
-        .catch(next)
+        Categoria.findByIdAndRemove(id)
+            .then(() => {
+              res.status(204).json({
+                message: "Categoria eliminado"
+              });
+            })
+            .catch(next)
+      }
+    )
 });
+
+/* Verificación del accessToken. */
+function verifyToken(req, res, next){
+  //token es orrecto y válido
+  //if true next()
+  //if false next(err)
+  console.log("Estoy en verifyToken");
+  const bearerHeader = req.headers['authorization'];
+  let token = bearerHeader.split(' ');
+  if(token && token[1]){
+    //si llegó un token
+    req.token = token[1];
+    next();
+  } else {
+    next({
+      message: "Invalid token",
+      name: "Forbidden" // 403
+    });
+  }
+  // next();
+}
 
 module.exports = router;

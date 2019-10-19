@@ -6,16 +6,6 @@ const Empleado = require('../models/empleado');
 
 /* GET empleados listing. */
 router.get('/', verifyToken, function(req, res, next) {
-  // Empleado.find({})
-  //   .then(result => {
-  //       if(result.length){
-  //         res.status(200).json({ result });
-  //       }
-  //       else {
-  //           res.status(404).send('No hay Elfos');
-  //       }
-  //   })
-  //   .catch(next)
   jwt.verify(
     req.token,
     'secretKey',
@@ -24,7 +14,7 @@ router.get('/', verifyToken, function(req, res, next) {
       if (err) next(err);
       Empleado.find({})
           .then(result => {
-              if (result.length){                
+              if (result.length){
                 res.status(200).json({ result });
                 // res.send("HOLA");
               }
@@ -37,11 +27,42 @@ router.get('/', verifyToken, function(req, res, next) {
   )
 });
 
+/* GET empleados:id */
+router.get('/:id', verifyToken, (req, res, next) =>{
+  jwt.verify(
+    req.token,
+    'secretKey',
+    (err, authData) => {
+      console.log("Error de verify " + err);
+      if (err) next(err);
+      let id = req.params.id;
+      Empleado.findById(id).exec()
+          .then(result => {
+            if(result){
+              res.status(200).json({
+                empleado: result
+              });
+            }
+            else{
+              res.status(404).send('Empleado no existe');
+            }
+          })
+          .catch(next);
+    }
+  )
+});
+
 /* POST empleados creación. */
-router.post('/', (req, res, next) => {
-  //Creando empleado
-  const body = req.body;
-  Empleado.create(body)
+router.post('/', verifyToken, (req, res, next) => {
+  jwt.verify(
+    req.token,
+    'secretKey',
+    (err, authData) => {
+      console.log("Error de verify " + err);
+      if (err) next(err);
+      //Creando empleado
+      const body = req.body;
+      Empleado.create(body)
         .then(result => {
           if(result){
             res.status(201).json({
@@ -56,6 +77,8 @@ router.post('/', (req, res, next) => {
           }
         })
         .catch(next);
+      }
+  )
 });
 
 /* POST empleados Login. */
@@ -108,23 +131,31 @@ router.post('/login', (req, res, next) => {
 });
 
 /* POST empleados modificación. */
-router.put('/:id', (req, res, next) =>{
-    let id = req.params.id;
-    let body = req.body;
+router.put('/:id', verifyToken, (req, res, next) =>{
+    jwt.verify(
+      req.token,
+      'secretKey',
+      (err, authData) => {
+        console.log("Error de verify " + err);
+        if (err) next(err);
+        let id = req.params.id;
+        let body = req.body;
 
-    Empleado.findByIdAndUpdate(id, body, {new: true})
-          .then(result => {
-            if(result){
-              res.status(200).json({
-                empleado: result
-              });
-            }
-            else{
-              res.status(404).send('Cant update, missing elf');
-            }
-          })
-          .catch(next)
-})
+        Empleado.findByIdAndUpdate(id, body, {new: true})
+            .then(result => {
+              if(result){
+                res.status(200).json({
+                  empleado: result
+                });
+              }
+              else{
+                res.status(404).send('Cant update, missing elf');
+              }
+            })
+            .catch(next)
+      }
+    )
+});
 
 /* Verificación del accessToken. */
 function verifyToken(req, res, next){
