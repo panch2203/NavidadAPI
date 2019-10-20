@@ -108,7 +108,7 @@ router.put('/:id', verifyToken, (req, res, next) =>{
 });
 
 /* DELETE niño:id */
-router.delete('/:id', (req, res, next) =>{
+router.delete('/:id', verifyToken, (req, res, next) =>{
     jwt.verify(
       req.token,
       'secretKey',
@@ -125,7 +125,7 @@ router.delete('/:id', (req, res, next) =>{
           })
           .catch(next)
       }
-    )    
+    )
 });
 
 /* Verificación del accessToken. */
