@@ -13,7 +13,7 @@ const regalosRouter = require('./routes/regalos');
 const categoriasRouter = require('./routes/categorias');
 const ninosregalosRouter = require('./routes/ninosregalos');
 
-mongoose.connect('mongodb://127.0.0.1:27017/santaDB',
+mongoose.connect('mongodb+srv://equipo1:Proyecto123@proyectoreact-dh9nb.mongodb.net/test?retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true}
 );
 
