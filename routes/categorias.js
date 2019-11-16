@@ -154,8 +154,7 @@ function verifyToken(req, res, next){
       message: "Invalid token",
       name: "Forbidden" // 403
     });
-  }
-  // next();
+  }  
 }
 
 module.exports = router;

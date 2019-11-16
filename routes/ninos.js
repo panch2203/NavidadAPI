@@ -133,7 +133,7 @@ router.delete('/:id', verifyToken, (req, res, next) =>{
             })
             .catch(next)
       }
-    )    
+    )
 });
 
 /* Verificación del accessToken. */

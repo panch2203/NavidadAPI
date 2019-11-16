@@ -34,7 +34,14 @@ app.use('/ninos', ninosRouter);
 app.use('/regalos', regalosRouter);
 app.use('/categorias',categoriasRouter);
 app.use('/ninosregalos',ninosregalosRouter);
+app.use(function(err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
 app.get('*', (req, res) => {
   res.status(404).send('Route not found');
 });
+
+
 module.exports = app;
