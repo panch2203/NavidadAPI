@@ -5,80 +5,119 @@ const mongoose = require('mongoose');
 const Empleado = require('../models/empleado');
 
 /* GET empleados listing. */
-router.get('/', verifyToken, function(req, res, next) {
-  jwt.verify(
-    req.token,
-    'secretKey',
-    (err, authData) => {
-      console.log("Error de verify " + err);
-      if (err) next(err);
-      Empleado.find({})
-          .then(result => {
-              if (result.length){
-                res.status(200).json({ result });
-                // res.send("HOLA");
-              }
-              else{
-                res.status(404).send('No hay elfos');
-              }
-          })
-          .catch(next);
-    }
-  )
+router.get('/', function(req, res, next) {
+  // jwt.verify(
+  //   req.token,
+  //   'secretKey',
+  //   (err, authData) => {
+  //     console.log("Error de verify " + err);
+  //     if (err) next(err);
+  //     Empleado.find({})
+  //         .then(result => {
+  //             if (result.length){
+  //               res.status(200).json({ result });
+  //               // res.send("HOLA");
+  //             }
+  //             else{
+  //               res.status(404).send('No hay elfos');
+  //             }
+  //         })
+  //         .catch(next);
+  //   }
+  // )
+  Empleado.find({})
+      .then(result => {
+          if (result.length){
+            res.status(200).json({ result });
+            // res.send("HOLA");
+          }
+          else{
+            res.status(404).send('No hay elfos');
+          }
+      })
+      .catch(next);
 });
 
 /* GET empleados:id */
-router.get('/:id', verifyToken, (req, res, next) =>{
-  jwt.verify(
-    req.token,
-    'secretKey',
-    (err, authData) => {
-      console.log("Error de verify " + err);
-      if (err) next(err);
-      let id = req.params.id;
-      Empleado.findById(id).exec()
-          .then(result => {
-            if(result){
-              res.status(200).json({
-                empleado: result
-              });
-            }
-            else{
-              res.status(404).send('Empleado no existe');
-            }
-          })
-          .catch(next);
-    }
-  )
+router.get('/:id', (req, res, next) =>{
+  // jwt.verify(
+  //   req.token,
+  //   'secretKey',
+  //   (err, authData) => {
+  //     console.log("Error de verify " + err);
+  //     if (err) next(err);
+  //     let id = req.params.id;
+  //     Empleado.findById(id).exec()
+  //         .then(result => {
+  //           if(result){
+  //             res.status(200).json({
+  //               empleado: result
+  //             });
+  //           }
+  //           else{
+  //             res.status(404).send('Empleado no existe');
+  //           }
+  //         })
+  //         .catch(next);
+  //   }
+  // )
+  let id = req.params.id;
+  Empleado.findById(id).exec()
+      .then(result => {
+        if(result){
+          res.status(200).json({
+            empleado: result
+          });
+        }
+        else{
+          res.status(404).send('Empleado no existe');
+        }
+      })
+      .catch(next);
 });
 
 /* POST empleados creación. */
-router.post('/', verifyToken, (req, res, next) => {
-  jwt.verify(
-    req.token,
-    'secretKey',
-    (err, authData) => {
-      console.log("Error de verify " + err);
-      if (err) next(err);
-      //Creando empleado
-      const body = req.body;
-      Empleado.create(body)
-        .then(result => {
-          if(result){
-            res.status(201).json({
-              message: "Elfo registrado",
-              empleado: result
-            })
-          }else {
-            next({
-              message: "Elfo no se pudo crear",
-              name: "Invalid"
-            })
-          }
+router.post('/', (req, res, next) => {
+  // jwt.verify(
+  //   req.token,
+  //   'secretKey',
+  //   (err, authData) => {
+  //     console.log("Error de verify " + err);
+  //     if (err) next(err);
+  //     //Creando empleado
+  //     const body = req.body;
+  //     Empleado.create(body)
+  //       .then(result => {
+  //         if(result){
+  //           res.status(201).json({
+  //             message: "Elfo registrado",
+  //             empleado: result
+  //           })
+  //         }else {
+  //           next({
+  //             message: "Elfo no se pudo crear",
+  //             name: "Invalid"
+  //           })
+  //         }
+  //       })
+  //       .catch(next);
+  //     }
+  // )
+  Empleado.create(body)
+    .then(result => {
+      if(result){
+        res.status(201).json({
+          message: "Elfo registrado",
+          empleado: result
         })
-        .catch(next);
+      }else {
+        next({
+          message: "Elfo no se pudo crear",
+          name: "Invalid"
+        })
       }
-  )
+    })
+    .catch(next);
 });
 
 /* POST empleados Login. */
@@ -131,7 +170,7 @@ router.post('/login', (req, res, next) => {
 });
 
 /* POST empleados modificación. */
-router.put('/:id', verifyToken, (req, res, next) =>{
+router.put('/:id', (req, res, next) =>{
     jwt.verify(
       req.token,
       'secretKey',
@@ -155,27 +194,51 @@ router.put('/:id', verifyToken, (req, res, next) =>{
             .catch(next)
       }
     )
+    let id = req.params.id;
+    let body = req.body;
+
+    Empleado.findByIdAndUpdate(id, body, {new: true})
+        .then(result => {
+          if(result){
+            res.status(200).json({
+              empleado: result
+            });
+          }
+          else{
+            res.status(404).send('Cant update, missing elf');
+          }
+        })
+        .catch(next)
 });
 
 /* DELETE empleados:id */
-router.delete('/:id', verifyToken, (req, res, next) =>{
-    jwt.verify(
-      req.token,
-      'secretKey',
-      (err, authData) => {
-        console.log("Error de verify " + err);
-        if (err) next(err);
-        let id = req.params.id;
+router.delete('/:id', (req, res, next) =>{
+    // jwt.verify(
+    //   req.token,
+    //   'secretKey',
+    //   (err, authData) => {
+    //     console.log("Error de verify " + err);
+    //     if (err) next(err);
+    //     let id = req.params.id;
+    //
+    //     Empleado.findByIdAndRemove(id)
+    //         .then(() => {
+    //           res.status(204).json({
+    //             message: "Elfo eliminado"
+    //           });
+    //         })
+    //         .catch(next)
+    //   }
+    // )
+    let id = req.params.id;
 
-        Empleado.findByIdAndRemove(id)
-            .then(() => {
-              res.status(204).json({
-                message: "Elfo eliminado"
-              });
-            })
-            .catch(next)
-      }
-    )
+    Empleado.findByIdAndRemove(id)
+        .then(() => {
+          res.status(204).json({
+            message: "Elfo eliminado"
+          });
+        })
+        .catch(next)
 });
 
 /* Verificación del accessToken. */
@@ -195,7 +258,7 @@ function verifyToken(req, res, next){
       message: "Invalid token",
       name: "Forbidden" // 403
     });
-  }  
+  }
 }
 
 module.exports = router;
