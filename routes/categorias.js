@@ -19,7 +19,7 @@ router.get('/', verifyToken, function(req, res, next) {
               res.status(200).json({ result });
             }
             else {
-                res.status(404).send('No hay categorias');
+              res.status(404).send('No hay categorias');
             }
         })
         .catch(next)
@@ -154,7 +154,7 @@ function verifyToken(req, res, next){
       message: "Invalid token",
       name: "Forbidden" // 403
     });
-  }  
+  }
 }
 
 module.exports = router;
