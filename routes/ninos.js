@@ -76,7 +76,7 @@ router.get('/:id', (req, res, next) =>{
 });
 
 /* POST niños creacion. */
-router.post('/', verifyToken, (req, res, next) => {
+router.post('/', (req, res, next) => {
   // jwt.verify(
   //   req.token,
   //   'secretKey',
@@ -120,7 +120,7 @@ router.post('/', verifyToken, (req, res, next) => {
 });
 
 /* POST niños modificación por ID */
-router.put('/:id', verifyToken, (req, res, next) =>{
+router.put('/:id', (req, res, next) =>{
     // jwt.verify(
     //   req.token,
     //   'secretKey',
@@ -162,7 +162,7 @@ router.put('/:id', verifyToken, (req, res, next) =>{
 });
 
 /* DELETE niño:id */
-router.delete('/:id', verifyToken, (req, res, next) =>{
+router.delete('/:id', (req, res, next) =>{
     // jwt.verify(
     //   req.token,
     //   'secretKey',
