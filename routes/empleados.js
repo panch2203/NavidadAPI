@@ -103,6 +103,7 @@ router.post('/', (req, res, next) => {
   //       .catch(next);
   //     }
   // )
+  const body = req.body;
   Empleado.create(body)
     .then(result => {
       if(result){
@@ -171,29 +172,29 @@ router.post('/login', (req, res, next) => {
 
 /* POST empleados modificación. */
 router.put('/:id', (req, res, next) =>{
-    jwt.verify(
-      req.token,
-      'secretKey',
-      (err, authData) => {
-        console.log("Error de verify " + err);
-        if (err) next(err);
-        let id = req.params.id;
-        let body = req.body;
-
-        Empleado.findByIdAndUpdate(id, body, {new: true})
-            .then(result => {
-              if(result){
-                res.status(200).json({
-                  empleado: result
-                });
-              }
-              else{
-                res.status(404).send('Cant update, missing elf');
-              }
-            })
-            .catch(next)
-      }
-    )
+    // jwt.verify(
+    //   req.token,
+    //   'secretKey',
+    //   (err, authData) => {
+    //     console.log("Error de verify " + err);
+    //     if (err) next(err);
+    //     let id = req.params.id;
+    //     let body = req.body;
+    //
+    //     Empleado.findByIdAndUpdate(id, body, {new: true})
+    //         .then(result => {
+    //           if(result){
+    //             res.status(200).json({
+    //               empleado: result
+    //             });
+    //           }
+    //           else{
+    //             res.status(404).send('Cant update, missing elf');
+    //           }
+    //         })
+    //         .catch(next)
+    //   }
+    // )
     let id = req.params.id;
     let body = req.body;
 

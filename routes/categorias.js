@@ -101,6 +101,7 @@ router.post('/', (req, res, next) => {
   //       .catch(next);
   //   }
   // )
+  const body = req.body;
   Categoria.create(body)
     .then(result => {
       if(result){

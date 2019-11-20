@@ -6,135 +6,207 @@ const Regalo = require('../models/regalo');
 const NinoRegalo = require('../models/ninoregalo');
 
 /* GET regalos listing. */
-router.get('/', verifyToken, function(req, res, next) {
-  jwt.verify(
-    req.token,
-    'secretKey',
-    (err, authData) => {
-      console.log("Error de verify " + err);
-      if (err) next(err);
-      Regalo.find({})
-        .then(result => {
-            if(result.length){
-              res.status(200).json({ result });
-            }
-            else {
-                res.status(404).send('No hay regalos');
-            }
-        })
-        .catch(next)
-    }
-  )
+router.get('/', function(req, res, next) {
+  // jwt.verify(
+  //   req.token,
+  //   'secretKey',
+  //   (err, authData) => {
+  //     console.log("Error de verify " + err);
+  //     if (err) next(err);
+  //     Regalo.find({})
+  //       .then(result => {
+  //           if(result.length){
+  //             res.status(200).json({ result });
+  //           }
+  //           else {
+  //               res.status(404).send('No hay regalos');
+  //           }
+  //       })
+  //       .catch(next)
+  //   }
+  // )
+  Regalo.find({})
+    .then(result => {
+        if(result.length){
+          res.status(200).json({ result });
+        }
+        else {
+            res.status(404).send('No hay regalos');
+        }
+    })
+    .catch(next)
 });
 
 /* GET regalo:id */
-router.get('/:id', verifyToken, (req, res, next) =>{
-  jwt.verify(
-    req.token,
-    'secretKey',
-    (err, authData) => {
-      console.log("Error de verify " + err);
-      if (err) next(err);
-      let id = req.params.id;
-      Regalo.findById(id).exec()
-        .then(result => {
-          if(result){
-            res.status(200).json({
-              regalo: result
-            });
-          }
-          else{
-            res.status(404).send('Regalo no existe');
-          }
-        })
-        .catch(next);
-    }
-  )
+router.get('/:id', (req, res, next) =>{
+  // jwt.verify(
+  //   req.token,
+  //   'secretKey',
+  //   (err, authData) => {
+  //     console.log("Error de verify " + err);
+  //     if (err) next(err);
+  //     let id = req.params.id;
+  //     Regalo.findById(id).exec()
+  //       .then(result => {
+  //         if(result){
+  //           res.status(200).json({
+  //             regalo: result
+  //           });
+  //         }
+  //         else{
+  //           res.status(404).send('Regalo no existe');
+  //         }
+  //       })
+  //       .catch(next);
+  //   }
+  // )
+  let id = req.params.id;
+  Regalo.findById(id).exec()
+    .then(result => {
+      if(result){
+        res.status(200).json({
+          regalo: result
+        });
+      }
+      else{
+        res.status(404).send('Regalo no existe');
+      }
+    })
+    .catch(next);
 });
 
 /* POST regalos creacion. */
-router.post('/', verifyToken, (req, res, next) => {
-  jwt.verify(
-    req.token,
-    'secretKey',
-    (err, authData) => {
-      console.log("Error de verify " + err);
-      if (err) next(err);
-      const body = req.body;
-      Regalo.create(body)
-        .then(result => {
-          if(result){
-            res.status(201).json({
-              message: "Creacion de regalo exitosa",
-              regalo: result
-            })
-          }else {
-            next({
-              message: "No se creo regalo",
-              name: "Invalid"
-            })
-          }
+router.post('/', (req, res, next) => {
+  // jwt.verify(
+  //   req.token,
+  //   'secretKey',
+  //   (err, authData) => {
+  //     console.log("Error de verify " + err);
+  //     if (err) next(err);
+  //     const body = req.body;
+  //     Regalo.create(body)
+  //       .then(result => {
+  //         if(result){
+  //           res.status(201).json({
+  //             message: "Creacion de regalo exitosa",
+  //             regalo: result
+  //           })
+  //         }else {
+  //           next({
+  //             message: "No se creo regalo",
+  //             name: "Invalid"
+  //           })
+  //         }
+  //       })
+  //       .catch(next);
+  //   }
+  // )
+  const body = req.body;
+  Regalo.create(body)
+    .then(result => {
+      if(result){
+        res.status(201).json({
+          message: "Creacion de regalo exitosa",
+          regalo: result
         })
-        .catch(next);
-    }
-  )
+      }else {
+        next({
+          message: "No se creo regalo",
+          name: "Invalid"
+        })
+      }
+    })
+    .catch(next);
 });
 
 // /* POST regalos modificación por ID */
-router.put('/:id', verifyToken, (req, res, next) =>{
-    jwt.verify(
-      req.token,
-      'secretKey',
-      (err, authData) => {
-        console.log("Error de verify " + err);
-        if (err) next(err);
-        let id = req.params.id;
-        let body = req.body;
+router.put('/:id', (req, res, next) =>{
+    // jwt.verify(
+    //   req.token,
+    //   'secretKey',
+    //   (err, authData) => {
+    //     console.log("Error de verify " + err);
+    //     if (err) next(err);
+    //     let id = req.params.id;
+    //     let body = req.body;
+    //
+    //     Regalo.findByIdAndUpdate(id, body, {new: true})
+    //       .then(result => {
+    //         if(result){
+    //           res.status(200).json({
+    //             nino: result
+    //           });
+    //         }
+    //         else{
+    //           res.status(404).send('Acción no posible, niño no existe');
+    //         }
+    //       })
+    //       .catch(next)
+    //   }
+    // )
+    let id = req.params.id;
+    let body = req.body;
 
-        Regalo.findByIdAndUpdate(id, body, {new: true})
-          .then(result => {
-            if(result){
-              res.status(200).json({
-                nino: result
-              });
-            }
-            else{
-              res.status(404).send('Acción no posible, niño no existe');
-            }
-          })
-          .catch(next)
-      }
-    )
+    Regalo.findByIdAndUpdate(id, body, {new: true})
+      .then(result => {
+        if(result){
+          res.status(200).json({
+            nino: result
+          });
+        }
+        else{
+          res.status(404).send('Acción no posible, niño no existe');
+        }
+      })
+      .catch(next)
 });
 
 /* DELETE regalo:id */
-router.delete('/:id', verifyToken, (req, res, next) =>{
-    jwt.verify(
-      req.token,
-      'secretKey',
-      (err, authData) => {
-        console.log("Error de verify " + err);
-        if (err) next(err);
-        let id = req.params.id;
+router.delete('/:id', (req, res, next) =>{
+    // jwt.verify(
+    //   req.token,
+    //   'secretKey',
+    //   (err, authData) => {
+    //     console.log("Error de verify " + err);
+    //     if (err) next(err);
+    //     let id = req.params.id;
+    //
+    //     //Eliminando asignacion del regalo a los niños
+    //     NinoRegalo.deleteMany({ idNino: id })
+    //         .then(() => {
+    //           res.status(204).json({
+    //             message: "Niños eliminados"
+    //           });
+    //         })
+    //         .catch(next)
+    //
+    //     Regalo.findByIdAndRemove(id)
+    //         .then(() => {
+    //           res.status(204).json({
+    //             message: "Niño eliminado"
+    //           });
+    //         })
+    //         .catch(next)
+    //   }
+    // )
+    let id = req.params.id;
 
-        //Eliminando asignacion del regalo a los niños
-        NinoRegalo.deleteMany({ idNino: id })
-            .then(() => {
-              res.status(204).json({
-                message: "Niños eliminados"
-              });
-            })
-            .catch(next)
+    //Eliminando asignacion del regalo a los niños
+    NinoRegalo.deleteMany({ idNino: id })
+        .then(() => {
+          res.status(204).json({
+            message: "Niños eliminados"
+          });
+        })
+        .catch(next)
 
-        Regalo.findByIdAndRemove(id)
-            .then(() => {
-              res.status(204).json({
-                message: "Niño eliminado"
-              });
-            })
-            .catch(next)
-      }
-    )
+    Regalo.findByIdAndRemove(id)
+        .then(() => {
+          res.status(204).json({
+            message: "Niño eliminado"
+          });
+        })
+        .catch(next)
 });
 
 /* Verificación del accessToken. */
