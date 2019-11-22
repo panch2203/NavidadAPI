@@ -192,7 +192,7 @@ router.delete('/:id', (req, res, next) =>{
     let id = req.params.id;
 
     //Modificando categorias de los regalos
-    Regalo.updateMany({"categoria": id}, {"$set":{"categoria": null}})
+    Regalo.updateMany({"categoria": id}, {"$set":{"categoria": "sin categoria"}})
         .then(() => {
           console.log("Cambios a regalos");
           res.status(200).json({
