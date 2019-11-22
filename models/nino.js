@@ -24,7 +24,7 @@ const ninoSchema = new mongoose.Schema({
     required: [true, 'Cant be blank!']
   },
   fechaNacimiento: {
-    type: String,
+    type: Date,
     required: [true, 'Cant be blank!']
   },
 });
